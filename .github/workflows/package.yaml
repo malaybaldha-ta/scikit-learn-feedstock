@@ -71,6 +71,7 @@ jobs:
           )
 
       - name: List build output
+        if: runner.os == 'Windows'
         run: |
           echo "Listing build directory..."
           dir /s /b
