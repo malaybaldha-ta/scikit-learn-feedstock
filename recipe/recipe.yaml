@@ -57,7 +57,7 @@ tests:
 
   - script:
       - export OMP_NUM_THREADS=1
-      - pytest --pyargs sklearn -k "not (${{ tests_to_skip }})" --verbose -nauto --timeout=1200 --durations=50
+      - pytest --pyargs sklearn -k "not (${{ tests_to_skip }})" -nauto --timeout=1200 --durations=50
 
     requirements:
       run:

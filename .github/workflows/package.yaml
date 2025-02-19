@@ -51,7 +51,7 @@ jobs:
           wmic os get osarchitecture
 
       # Set up MSVC and build package
-      - name: Set up MSVC and Build Conda Package
+      - name: Set up MSVC and build Windows Conda package
         if: runner.os == 'Windows'
         run: |
           @echo off
@@ -70,7 +70,7 @@ jobs:
             )
           )
 
-      - name: Build conda package
+      - name: Build non-Windows conda package
         uses: prefix-dev/rattler-build-action@v0.2.30
         if: runner.os != 'Windows'
         with:
