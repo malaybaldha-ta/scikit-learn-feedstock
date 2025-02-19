@@ -1,0 +1,81 @@
+context:
+  version: 1.6.1
+  default_abi_level: 1.21
+  tests_to_skip: "_not_a_real_test or test_loadings_converges or test_mlp_regressor_dtypes_casting"
+  extra_pytest_args: " "
+
+
+package:
+  name: scikit-learn
+  version: ${{ version }}
+
+source:
+  - url: https://github.com/scikit-learn/scikit-learn/archive/${{ version }}.tar.gz
+    sha256: 88c1816c89d2b27f2506d155e1195d71fc9d935bbe1968ce02b0e9ddd659b2ff
+
+build:
+  python:
+    entry_points:
+      - f2py = numpy.f2py.f2py2e:main  # [win]
+      - numpy-config = numpy._configtool:main
+
+requirements:
+  build:
+    - numpy
+    - scipy
+    - joblib >=1.2.0
+    - threadpoolctl >=3.1.0
+    - libgomp
+    - ${{ compiler('c') }}
+    - ${{ compiler('cxx') }}
+
+    # note: some `host` dependencies that run at build time (e.g., `cython`, `meson-python`)
+    #       should ideally be in `build` instead, this is because cross compilation of
+    #       Python packages in conda-forge uses `crossenv` rather than regular cross compilation.
+  host:
+    - python
+    - pip
+    - python-build
+    - meson-python >=0.16.0
+    - ninja
+    - cython >=3.0.10
+    - numpy
+    - scipy >=1.8  # [aarch64]
+    - joblib >=1.2.0
+    - threadpoolctl >=3.1.0
+   # See https://github.com/conda-forge/openmp-feedstock/issues/126
+    - libgomp  # [linux]
+
+  run:
+    - python
+    - scipy
+    - joblib >=1.2.0
+    - threadpoolctl >=3.1.0
+
+
+tests:
+
+  - script:
+      - export OMP_NUM_THREADS=1
+      - pytest --pyargs sklearn -k "not (${{ tests_to_skip }})" --verbose -nauto --timeout=1200 --durations=50
+
+    requirements:
+      run:
+        - pytest >=7.1.2
+        - cython >=3.0.10
+        - pytest-xdist
+        - pytest-timeout
+
+  - python:
+      imports:
+        - sklearn
+
+
+about:
+  homepage: http://scikit-learn.org/
+  license: BSD-3-Clause
+  license_file: COPYING
+  summary: A set of python modules for machine learning and data mining
+  documentation: https://scikit-learn.org/stable/
+  repository:  https://github.com/scikit-learn/scikit-learn
+
