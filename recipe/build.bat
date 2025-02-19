@@ -7,7 +7,7 @@ mkdir builddir
 
 :: -wnx flags mean: --wheel --no-isolation --skip-dependency-check
 %PYTHON% -m build -w -n -x ^
-    -Cbuilddir=builddir 
+    -Cbuilddir=builddir
 if %ERRORLEVEL% neq 0 exit 1
 
 :: `pip install dist\*.whl` does not work on windows,

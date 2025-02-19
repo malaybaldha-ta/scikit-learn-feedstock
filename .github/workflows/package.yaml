@@ -70,6 +70,15 @@ jobs:
             )
           )
 
+      - name: Build conda package
+        uses: prefix-dev/rattler-build-action@v0.2.30
+        if: runner.os != 'Windows'
+        with:
+          # needs to be unique for each matrix entry
+          recipe-path: ./recipe
+          artifact-name: package-${{ matrix.target-platform }}
+          build-args: --target-platform ${{ matrix.target-platform }}${{ matrix.target-platform == 'linux-aarch64' && ' --no-test' || '' }}
+
       - name: List build output
         if: runner.os == 'Windows'
         run: |
@@ -81,13 +90,3 @@ jobs:
         with:
           name: built-conda-package
           path: '**/*.conda'  # Adjust the path if needed
-
-
-      - name: Build conda package
-        uses: prefix-dev/rattler-build-action@v0.2.30
-        if: runner.os != 'Windows'
-        with:
-          # needs to be unique for each matrix entry
-          recipe-path: ./recipe
-          artifact-name: package-${{ matrix.target-platform }}
-          build-args: --target-platform ${{ matrix.target-platform }}${{ matrix.target-platform == 'linux-aarch64' && ' --no-test' || '' }}
